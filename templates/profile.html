@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Profile | AI Meal Recommender</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #10b981;
+        --primary-dark: #059669;
+        --primary-light: #d1fae5;
+        --secondary: #6366f1;
+        --secondary-dark: #4f46e5;
+        --text: #1e293b;
+        --text-light: #64748b;
+        --muted: #94a3b8;
+        --light: #f8fafc;
+        --background: #f1f5f9;
+        --border: #e2e8f0;
+        --card: #ffffff;
+        --danger: #ef4444;
+        --danger-dark: #dc2626;
+        --radius: 0.5rem;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--background);
+        color: var(--text);
+        line-height: 1.5;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: var(--card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        padding: 2rem;
+        color: white;
+        position: relative;
+      }
+
+      .profile-info {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .avatar {
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--primary);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .user-details {
+        flex: 1;
+      }
+
+      .user-details h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .user-email {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        opacity: 0.9;
+      }
+
+      .user-email svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .content {
+        padding: 2rem;
+      }
+
+      .section {
+        margin-bottom: 2.5rem;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .section-title svg {
+        width: 20px;
+        height: 20px;
+        color: var(--primary);
+      }
+
+      .favorites-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .favorite-item {
+        background: var(--light);
+        border-radius: var(--radius);
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .favorite-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .favorite-name {
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      .empty-favorites {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-light);
+        background: var(--light);
+        border-radius: var(--radius);
+      }
+
+      .empty-favorites svg {
+        width: 40px;
+        height: 40px;
+        color: var(--muted);
+        margin-bottom: 1rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+      }
+
+      .btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: white;
+        border: none;
+      }
+
+      .btn-danger:hover {
+        background: var(--danger-dark);
+      }
+
+      .actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .edit-profile-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      .edit-profile-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .edit-profile-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .nav-links {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        background: var(--light);
+        border-radius: var(--radius);
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      .nav-link:hover {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .nav-link svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .activity-item {
+        display: flex;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .activity-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .activity-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .activity-icon.green {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .activity-icon.blue {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--info);
+      }
+
+      .activity-icon.purple {
+        background: var(--secondary-light);
+        color: var(--secondary);
+      }
+
+      .activity-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .activity-content {
+        flex: 1;
+      }
+
+      .activity-title {
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 0.25rem;
+      }
+
+      .activity-time {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+      }
+
+      .btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+      }
+
+      .btn-outline:hover {
+        background: var(--primary-light);
+        transform: translateY(-2px);
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-light);
+      }
+
+      .empty-state p {
+        margin-bottom: 1.5rem;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 1rem;
+        }
+
+        .profile-info {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+
+        .edit-profile-btn {
+          position: static;
+          margin-top: 1rem;
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      .logout-link {
+        background-color: #dc3545; /* Bright red background */
+        color: #fff; /* White text */
+        font-weight: 600;
+      }
+
+      .logout-link:hover {
+        background-color: black;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      /* Make the SVG icon white for better contrast */
+      .logout-link svg {
+        stroke: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <a href="/edit_profile" class="edit-profile-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+            ></path>
+            <path
+              d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+            ></path>
+          </svg>
+          Edit Profile
+        </a>
+        <div class="profile-info">
+          <div class="avatar">
+            {% if user.profile_photo %}
+            <img
+              src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}"
+              alt="{{ user.username }}"
+            />
+            {% else %} {{ user.username[0] | upper }} {% endif %}
+          </div>
+          <div class="user-details">
+            <h2>{{ user.username }}</h2>
+            <div class="user-email">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                ></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              {{ user.email }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Navigation Links -->
+        <div class="nav-links">
+          <a href="/dashboard" class="nav-link">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Dashboard
+          </a>
+          <a href="/favorites" class="nav-link">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              ></path>
+            </svg>
+            My Favorites
+          </a>
+          <a href="/logout" class="nav-link logout-link">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Logout
+          </a>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                ></path>
+              </svg>
+              Your Favorite Meals
+            </div>
+          </div>
+
+          {% if favorites %}
+          <div class="favorites-list">
+            {% for meal in favorites %}
+            <div class="favorite-item">
+              <div class="favorite-name">{{ meal.meal_name }}</div>
+              <a
+                href="/meal_details/{{ meal.meal_id }}"
+                class="btn btn-primary"
+                style="padding: 0.5rem 1rem; font-size: 0.875rem"
+              >
+                View Details
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-favorites">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              ></path>
+            </svg>
+            <p>You haven't added any favorite meals yet.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <!-- <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          Recent Activity
+        </div>
+      </div>
+
+      <div class="activity-list">
+        {% if recent_activity %} {% for activity in recent_activity %}
+        <div class="activity-item">
+          <div class="activity-icon {{ activity.icon_color }}">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              {{ activity.icon_path | safe }}
+            </svg>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">{{ activity.title }}</div>
+            <div class="activity-time">{{ activity.time }}</div>
+          </div>
+        </div>
+        {% endfor %} {% else %}
+        <div class="empty-state">
+          <p>No recent activity to display.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div> -->
+  </body>
+</html>

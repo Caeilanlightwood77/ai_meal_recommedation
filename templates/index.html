@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Meal Recommendation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* END */
+      :root {
+        --primary: #10b981;
+        --primary-dark: #059669;
+        --primary-light: #d1fae5;
+        --secondary: #6366f1;
+        --secondary-dark: #4f46e5;
+        --text: #1e293b;
+        --text-light: #64748b;
+        --muted: #94a3b8;
+        --light: #f8fafc;
+        --background: #f1f5f9;
+        --border: #e2e8f0;
+        --card: #ffffff;
+        --error: #ef4444;
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --info: #3b82f6;
+        --radius: 0.5rem;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--background);
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      /* Header and Navigation */
+      header {
+        background: var(--card);
+        padding: 1rem 2rem;
+        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .logo svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      nav {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      nav a {
+        text-decoration: none;
+        color: var(--text);
+        font-weight: 500;
+        transition: color 0.2s;
+        padding: 0.5rem 0;
+        position: relative;
+      }
+
+      nav a:hover {
+        color: var(--primary);
+      }
+
+      nav a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--primary);
+        transition: width 0.3s;
+      }
+
+      nav a:hover::after {
+        width: 100%;
+      }
+
+      .user-menu {
+        position: relative;
+      }
+
+      .user-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: var(--radius);
+        transition: background-color 0.2s;
+      }
+
+      .user-button:hover {
+        background-color: var(--background);
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        background: var(--primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--primary);
+        overflow: hidden;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .user-name {
+        font-weight: 500;
+      }
+      /* end */
+
+      .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: var(--card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .header {
+        background: var(--primary);
+        padding: 1.5rem 2rem;
+        color: white;
+        position: relative;
+      }
+
+      .header::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+      }
+
+      .header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .header p {
+        margin-top: 0.5rem;
+        opacity: 0.9;
+        font-weight: 400;
+      }
+
+      .form-container {
+        padding: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      input[type="number"],
+      select,
+      input[type="range"] {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background-color: var(--light);
+        transition: all 0.2s ease;
+      }
+
+      input[type="number"]:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%2364748b' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+        cursor: pointer;
+      }
+
+      input[type="range"] {
+        -webkit-appearance: none;
+        height: 8px;
+        background: var(--border);
+        border: none;
+        border-radius: 4px;
+        padding: 0;
+        margin: 1rem 0;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--primary);
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--primary);
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+      }
+
+      .range-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--text-light);
+        margin-top: 0.25rem;
+      }
+
+      .helper-box {
+        background: var(--light);
+        border-left: 4px solid var(--primary);
+        padding: 1rem 1.25rem;
+        margin-top: 0.75rem;
+        border-radius: var(--radius);
+        font-size: 0.9rem;
+        color: var(--text);
+      }
+
+      .helper-box strong {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--primary-dark);
+      }
+
+      .range-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem 1.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .range-grid span:nth-child(odd) {
+        font-weight: 500;
+      }
+
+      .range-grid span:nth-child(even) {
+        color: var(--text-light);
+        text-align: right;
+      }
+
+      .helper-note {
+        margin-top: 0.75rem;
+        font-size: 0.85rem;
+        color: var(--text-light);
+        font-style: italic;
+      }
+
+      button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+      }
+
+      button:hover {
+        background-color: var(--primary-dark);
+      }
+
+      button svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      #loading {
+        display: none;
+        margin-top: 1.5rem;
+        text-align: center;
+        color: var(--text-light);
+        background: var(--light);
+        padding: 1rem;
+        border-radius: var(--radius);
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.6;
+        }
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 2rem 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+        color: var(--secondary-dark);
+      }
+
+      .nutrition-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .taste-preferences {
+        margin-top: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 1rem;
+          width: auto;
+        }
+
+        .form-container {
+          padding: 1.5rem;
+        }
+
+        .nutrition-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <a href="/" class="logo">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+          </svg>
+          AI Meal Recommender
+        </a>
+        <nav>
+          <a href="/dashboard">Dashboard</a>
+          <a href="/index">Get Recommendations</a>
+          <a href="/favorites">Favorites</a>
+          <a href="/history">History</a>
+          <a href="/profile"
+            ><div class="user-menu">
+              <button class="user-button">
+                <div class="avatar">
+                  {% if user.profile_photo %}
+                  <img
+                    src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}"
+                    alt="{{ user.username }}"
+                  />
+                  {% else %} {{ user.username[0] | upper }} {% endif %}
+                </div>
+                <span class="user-name">{{ user.username }}</span>
+              </button>
+            </div></a
+          >
+        </nav>
+      </div>
+    </header>
+    <div class="container">
+      <div class="header">
+        <h1>AI Meal Recommendation</h1>
+        <p>Get personalized meal suggestions based on your preferences</p>
+      </div>
+
+      <div class="form-container">
+        <form id="mealForm" method="POST" action="/predict">
+          <div class="form-group">
+            <label for="ingredient_preference">Preferred Main Ingredient</label>
+            <select
+              name="ingredient_preference"
+              id="ingredient_preference"
+              required
+            >
+              <option value="">-- Select One --</option>
+              <option value="chicken">Chicken</option>
+              <option value="fish">Fish</option>
+              <option value="beef">Beef</option>
+              <option value="pork">Pork</option>
+              <option value="vegetables">Vegetables</option>
+            </select>
+          </div>
+
+          <div class="section-title">Nutritional Requirements</div>
+
+          <div class="nutrition-grid">
+            <div class="form-group">
+              <label for="calories">Calories (kcal)</label>
+              <input
+                type="number"
+                id="calories"
+                name="calories"
+                min="0"
+                max="2000"
+                placeholder="E.g., 400 for lunch"
+                required
+              />
+              <div class="helper-box">
+                <strong>Suggested Ranges</strong>
+                <div class="range-grid">
+                  <span>🥗 Light Snack</span> <span>100–250 kcal</span>
+                  <span>🍳 Breakfast</span> <span>250–500 kcal</span>
+                  <span>🍛 Lunch / Dinner</span> <span>400–800 kcal</span>
+                  <span>💪 High-Protein</span> <span>500–900 kcal</span>
+                  <span>🍔 Large Meal</span> <span>900–1200 kcal</span>
+                </div>
+                <div class="helper-note">
+                  Feel free to input your own value up to 2000 kcal.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="protein_g">Protein (g)</label>
+              <input
+                type="number"
+                id="protein_g"
+                name="protein_g"
+                min="0"
+                max="150"
+                placeholder="E.g., 30 for high protein"
+                required
+              />
+              <div class="helper-box">
+                <strong>Suggested Ranges</strong>
+                <div class="range-grid">
+                  <span>💪 High-Protein</span> <span>30–60 g</span>
+                  <span>🥚 Breakfast</span> <span>10–25 g</span>
+                  <span>🍽️ Lunch/Dinner</span> <span>20–50 g</span>
+                </div>
+                <div class="helper-note">Enter any value up to 150g.</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="fat_g">Fat (g)</label>
+              <input
+                type="number"
+                id="fat_g"
+                name="fat_g"
+                min="0"
+                max="100"
+                placeholder="E.g., 15 for balanced meal"
+                required
+              />
+              <div class="helper-box">
+                <strong>Suggested Ranges</strong>
+                <div class="range-grid">
+                  <span>🥗 Light Meal</span> <span>5–15 g</span>
+                  <span>🍳 Breakfast</span> <span>10–20 g</span>
+                  <span>🍛 Lunch/Dinner</span> <span>15–35 g</span>
+                </div>
+                <div class="helper-note">
+                  Limit fat as needed for dietary goals (max: 100g).
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="carbs_g">Carbs (g)</label>
+              <input
+                type="number"
+                id="carbs_g"
+                name="carbs_g"
+                min="0"
+                max="200"
+                placeholder="E.g., 50 for balanced meal"
+                required
+              />
+              <div class="helper-box">
+                <strong>Suggested Ranges</strong>
+                <div class="range-grid">
+                  <span>🥪 Snack</span> <span>10–30 g</span>
+                  <span>🍳 Breakfast</span> <span>30–60 g</span>
+                  <span>🍝 Lunch/Dinner</span> <span>50–100 g</span>
+                </div>
+                <div class="helper-note">
+                  Adjust based on activity level (up to 200g).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">Taste Preferences</div>
+
+          <div class="taste-preferences">
+            <div class="form-group">
+              <label for="spice_level">Spice Level</label>
+              <input
+                type="range"
+                id="spice_level"
+                name="spice_level"
+                min="0"
+                max="10"
+                value="5"
+              />
+              <div class="range-labels">
+                <span>Mild</span><span>Medium</span><span>Spicy</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="sweetness_level">Sweetness Level</label>
+              <input
+                type="range"
+                id="sweetness_level"
+                name="sweetness_level"
+                min="0"
+                max="10"
+                value="5"
+              />
+              <div class="range-labels">
+                <span>Low</span><span>Medium</span><span>High</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bitterness_level">Bitterness Level</label>
+              <input
+                type="range"
+                id="bitterness_level"
+                name="bitterness_level"
+                min="0"
+                max="10"
+                value="5"
+              />
+              <div class="range-labels">
+                <span>Low</span><span>Medium</span><span>High</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="saltiness_level">Saltiness Level</label>
+              <input
+                type="range"
+                id="saltiness_level"
+                name="saltiness_level"
+                min="0"
+                max="10"
+                value="5"
+              />
+              <div class="range-labels">
+                <span>Low</span><span>Medium</span><span>High</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+            Get Recommendation
+          </button>
+
+          <div id="loading">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="animate-spin mr-2"
+            >
+              <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+            </svg>
+            Analyzing your preferences and generating personalized meals...
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("mealForm").addEventListener("submit", () => {
+        document.getElementById("loading").style.display = "flex";
+      });
+    </script>
+  </body>
+</html>
